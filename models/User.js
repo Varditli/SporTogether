@@ -4,7 +4,7 @@ const {ObjectId} = mongoose.Schema.Types
 const userSchema = mongoose.model(
     "User",
 new mongoose.Schema({
-    name:{
+    username:{
         type:String,
         required:true
     },
@@ -17,6 +17,10 @@ new mongoose.Schema({
         required:true
     },
     password:{
+        type:String,
+        required:true
+    },
+    tel:{
         type:String,
         required:true
     },
