@@ -21,6 +21,8 @@ mongoose.connection.on('error',(err)=>{
 })
 
 require('./models/User')
+require('./models/Trainer')
+
 // require('./models/post')
 
 app.use(express.json())

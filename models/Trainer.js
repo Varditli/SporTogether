@@ -4,7 +4,7 @@ const {ObjectId} = mongoose.Schema.Types
 const trainerSchema = mongoose.model(
     "Trainer",
 new mongoose.Schema({
-    name:{
+    username:{
         type:String,
         required:true
     },
@@ -20,10 +20,10 @@ new mongoose.Schema({
         type:String,
         required:true
     },
-    sportType:{
-        type: String,
-        enum: Object.values(Types),
-    },
+    // sportType:{
+    //     type: String,
+    //     enum: Object.values(Types),
+    // },
     experience:{
         type: String,
         required:true,
