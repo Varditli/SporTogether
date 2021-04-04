@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken')
 const {JWT_SECRET} = require('../key')
 const mongoose = require('mongoose')
 const User = mongoose.model("User")
+const Trainer = mongoose.model("Trainer")
 
 module.exports =( req,res,next)=>{
     const {authorization} = req.headers
@@ -19,10 +20,9 @@ module.exports =( req,res,next)=>{
             req.user = userdata
            next()
         })
-    /*    Seller.findById(_id).then(sellerdata=>{
+        Trainer.findById(_id).then(sellerdata=>{
             req.seller = sellerdata
             next()
         })
-        */
     })
 }
