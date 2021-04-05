@@ -5,14 +5,14 @@ const trainingSchema = mongoose.model(
     "Training",
 new mongoose.Schema({
 
-    trainer_ID:{
+    trainerCreate:{
         type:ObjectId,
         ref:"Trainer"
     },
 
     location:{
         type:String,
-        required:true
+        required:false
     },
 
     name:{
@@ -28,11 +28,10 @@ new mongoose.Schema({
     type:{
         type:String,
         required:true,
-        enum: Object.values(Types)
-    },
+        },
 
     time:{
-        type:TimeRanges,
+        type: Date,
         required:true
     },
 
@@ -73,12 +72,12 @@ new mongoose.Schema({
 
     is_active:{
         type: Boolean,
-        required:true,
+        required:false,
     },
 
     created_at:{
         type:Date,
-        required:true
+        required:false
     },
     
 })
