@@ -20,16 +20,17 @@ mongoose.connection.on('error',(err)=>{
     console.log("err connecting", err)
 })
 
-require('./models/User')
+require('./models/Trainee')
 require('./models/Trainer')
 require('./models/Training')
+require('./models/SportType')
 
-// require('./models/post')
+const auth = require('./routes/TraineeAuth')
+const trainingAuth = require('./routes/trainingAuth')
+const sportTypeAuth = require('./routes/sportTypeAuth')
 
 app.use(express.json())
-app.use(require('./routes/auth'))
-app.use(require('./routes/trainingAuth'))
-
+app.use(auth, trainingAuth, sportTypeAuth)
 
 app.listen(PORT,()=>{
     console.log("server is running on", PORT)
