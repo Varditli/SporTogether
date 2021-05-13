@@ -1,8 +1,8 @@
 const mongoose = require('mongoose')
 const {ObjectId} = mongoose.Schema.Types
 
-const userSchema = mongoose.model(
-    "User",
+const TraineeSchema = mongoose.model(
+    "Trainee",
 new mongoose.Schema({
     username:{
         type:String,
@@ -27,7 +27,8 @@ new mongoose.Schema({
 
     // resetToken: String,
     // expireToken: Date,
-    // mylike:[{type:ObjectId,ref:"Deal"}],
+    mylikes:[{type:ObjectId,ref:"Training"}],
+    mytrainings:[{type:ObjectId,ref:"Training"}],
     // roles: [
     //     {
     //       type: mongoose.Schema.Types.ObjectId,
@@ -37,4 +38,4 @@ new mongoose.Schema({
 
 })
 )
-module.exports = userSchema;
+module.exports = TraineeSchema;

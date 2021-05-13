@@ -1,7 +1,7 @@
 const express = require('express')
 const Router = express.Router()
 const mongoose = require('mongoose')
-const User = mongoose.model("User")
+const Trainee = mongoose.model("Trainee")
 const Trainer = mongoose.model("Trainer")
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
@@ -14,26 +14,26 @@ Router.post('/signup',(req,res)=>{
     if(!email || !password || !username || !age || !tel ){
         return res.status(422).json({error:"please add all the fields required"})
     }
-    User.findOne({email:email})
-    .then((savedUser)=>{
-        if(savedUser){
-            return res.status(422).json({error:"User already exist with that email"})
+    Trainee.findOne({email:email})
+    .then((savedTrainee)=>{
+        if(savedTrainee){
+            return res.status(422).json({error:"Trainee already exist with that email"})
         }
         bcrypt.hash(password,12)
         .then(hashedpassword=>{
-                const user = new User({
+                const trainee = new Trainee({
                     email,
                     password:hashedpassword,
                     age,
                     tel,
                     username
                 })
-                user.save(err => {
+                trainee.save(err => {
                     if (err) {
                       res.status(500).send({ message: err })
                       return
                     }
-                    res.json({message:"saved successfully"})
+                    res.json({message:"trainee saved successfully"})
                 })
         })
         
@@ -84,16 +84,16 @@ Router.post('/signin',(req,res)=>{
     if(!email || !password){
         return res.status(422).json({error:"please add email or password"})
     }
-    User.findOne({email:email})
-    .then(savedUser=>{
-        if(!savedUser){
+    Trainee.findOne({email:email})
+    .then(savedTrainee=>{
+        if(!savedTrainee){
            return res.status(422).json({error:"Invalid email or password"})
         }
-        bcrypt.compare(password, savedUser.password)
+        bcrypt.compare(password, savedTrainee.password)
         .then(doMatch=>{
             if(doMatch){
                // res.json({message:"successfully signed in"})
-               const token = jwt.sign({_id:savedUser._id},JWT_SECRET)
+               const token = jwt.sign({_id:savedTrainee._id},JWT_SECRET)
                res.json({token})
             }
             else{
@@ -111,15 +111,15 @@ Router.post('/signinTrainer',(req,res)=>{
         return res.status(422).json({error:"please add email or password"})
     }
     Trainer.findOne({email:email})
-    .then(savedUser=>{
-        if(!savedUser){
+    .then(savedTrainer=>{
+        if(!savedTrainer){
            return res.status(422).json({error:"Invalid email or password"})
         }
-        bcrypt.compare(password, savedUser.password)
+        bcrypt.compare(password, savedTrainer.password)
         .then(doMatch=>{
             if(doMatch){
             //  res.json({message:"successfully signed in"},)
-               const token = jwt.sign({_id:savedUser._id},JWT_SECRET)
+               const token = jwt.sign({_id:savedTrainer._id},JWT_SECRET)
                res.json({token})
             }
             else{

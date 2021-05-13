@@ -5,7 +5,7 @@ const trainingSchema = mongoose.model(
     "Training",
 new mongoose.Schema({
 
-    trainerCreate:{
+    trainingCreator:{
         type:ObjectId,
         ref:"Trainer"
     },
@@ -79,7 +79,14 @@ new mongoose.Schema({
         type:Date,
         required:false
     },
-    
+    likes:[{
+        type:ObjectId,
+        ref:"Trainee"
+    }],
+    participants:[{
+        type:ObjectId,
+        ref:"Trainee"
+    }],
 })
 )
 module.exports = trainingSchema;

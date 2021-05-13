@@ -12,6 +12,10 @@ new mongoose.Schema({
         type:String,
         required:true
     },
+    tel:{
+        type:String,
+        required:true
+    },
     age:{
         type:Number,
         required:true
@@ -20,10 +24,10 @@ new mongoose.Schema({
         type:String,
         required:true
     },
-    // sportType:{
-    //     type: String,
-    //     enum: Object.values(Types),
-    // },
+    sportType:[{ 
+         type: String,
+         required:true
+    }],
     experience:{
         type: String,
         required:true,
@@ -36,7 +40,7 @@ new mongoose.Schema({
 
     // resetToken: String,
     // expireToken: Date,
-    // mylike:[{type:ObjectId,ref:"Deal"}],
+    mylike:[{type:ObjectId,ref:"Training"}],
     // roles: [
     //     {
     //       type: mongoose.Schema.Types.ObjectId,
