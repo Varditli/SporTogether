@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const {ObjectId} = mongoose.Schema.Types
 
-const TraineeSchema = mongoose.model(
+const traineeSchema = mongoose.model(
     "Trainee",
 new mongoose.Schema({
     username:{
@@ -38,4 +38,4 @@ new mongoose.Schema({
 
 })
 )
-module.exports = TraineeSchema;
+module.exports = traineeSchema;
