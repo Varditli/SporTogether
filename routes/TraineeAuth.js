@@ -45,8 +45,8 @@ Router.post('/signupTrainee',(req,res)=>{
 })
 
 Router.post('/signupTrainer',(req,res)=>{
-    const {username,email,password,age,tel,experience, sportTypes, photo} = req.body
-    if(!email || !password || !username || !age || !tel||!experience || !sportTypes ||!photo){
+    const {username,email,password,age,tel,experience, sportType, photo} = req.body
+    if(!email || !password || !username || !age || !tel||!experience || !sportType){
         return res.status(422).json({error:"please add all the fields"})
     }
     Trainer.findOne({email:email})
@@ -121,8 +121,8 @@ Router.post('/signinTrainer',(req,res)=>{
         .then(doMatch=>{
             if(doMatch){
                const token = jwt.sign({_id:savedTrainer._id},JWT_SECRET)
-               const {_id, username, email, tel, age, password, experience, sportTypes, photo} = savedTrainer
-               res.json({token, trainer:{ _id, username, email, tel, age, password, experience, sportTypes, photo}})
+               const {_id, username, email, tel, age, password, experience, sportType, photo} = savedTrainer
+               res.json({token, trainer:{ _id, username, email, tel, age, password, experience, sportType, photo}})
             }
             else{
                 return res.status(422).json({error:"Invalid email or password"})
@@ -148,8 +148,8 @@ Router.get("/TrainerDetails",(req,res)=>{
 
 
   Router.post('/EditTrainer',(req,res)=>{
-    const {username,email,password,age,tel,experience, sportTypes, photo} = req.body
-    if(!email || !password || !username || !age || !tel||!experience|| !sportTypes ||!photo){
+    const {username,email,password,age,tel,experience, sportType, photo} = req.body
+    if(!email || !password || !username || !age || !tel||!experience|| !sportType ||!photo){
         return res.status(422).json({error:"please add all the fields"})
     }
     Trainer.findOne({email:email})
