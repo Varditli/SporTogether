@@ -25,12 +25,13 @@ require('./models/Trainer')
 require('./models/Training')
 require('./models/SportType')
 
-const auth = require('./routes/TraineeAuth')
+const auth = require('./routes/auth')
+const traineeAuth = require('./routes/traineeAuth')
 const trainingAuth = require('./routes/trainingAuth')
 const sportTypeAuth = require('./routes/sportTypeAuth')
 
 app.use(express.json())
-app.use(auth, trainingAuth, sportTypeAuth)
+app.use(auth, traineeAuth, trainingAuth, sportTypeAuth)
 
 app.listen(PORT,()=>{
     console.log("server is running on", PORT)
