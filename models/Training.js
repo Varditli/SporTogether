@@ -25,10 +25,10 @@ new mongoose.Schema({
         required:true
     },
 
-    type:{
+    type:[{
         type:String,
         required:true,
-        },
+        }],
 
     time:{
         type: Date,
