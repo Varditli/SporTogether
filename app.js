@@ -7,6 +7,8 @@ const cors = require('cors')
 app.use(cors())
 //btrPlpqOKmAIyqeG
 
+console.log(Date.now());
+
 mongoose.connect(MONGOURI,{
     useNewUrlParser: true,
     useUnifiedTopology: true

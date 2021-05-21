@@ -6,7 +6,8 @@ const Trainer = mongoose.model("Trainer")
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const {JWT_SECRET} = require('../key')
-const requireLogin = require('../middleware/requireLogin')
+const requireLoginTrainee = require('../middleware/requireLoginTrainee')
+const requireLoginTrainer = require('../middleware/requireLoginTrainer')
 
 
 // Router.post('/signup',(req,res)=>{
@@ -133,8 +134,8 @@ const requireLogin = require('../middleware/requireLogin')
 // })
 
 // Router.post('/editTrainerProfile'),(req,res)=>{
-//     const {email,age,tel,experience, sportType} = req.body
-//     if(!email || !age || !tel||!experience || !sportType){
+//     const {username, email,age,tel,experience, sportType} = req.body
+//     if(!username ||!email || !age || !tel||!experience || !sportType){
 //         return res.status(422).json({error:"please add all the fields"})
 //     }
 //     Trainer.findOne({email:email})
@@ -142,7 +143,7 @@ const requireLogin = require('../middleware/requireLogin')
 //         if(!savedTrainer){
 //            return res.status(422).json({error:"Please fill in all the field required"})
 //         }
-//         savedTrainer.email = email
+//         savedTrainer.username = username
 //         savedTrainer.age = age
 //         savedTrainer.tel = tel
 //         savedTrainer.experience = experience

@@ -6,7 +6,7 @@ const Trainer = mongoose.model("Trainer")
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const {JWT_SECRET} = require('../key')
-const requireLogin = require('../middleware/requireLogin')
+const requireLogin = require('../middleware/requireLoginTrainee')
 
 
 Router.post('/signupTrainee',(req,res)=>{
@@ -62,7 +62,8 @@ Router.post('/signupTrainer',(req,res)=>{
                     age,
                     tel,
                     experience,
-                    username
+                    username,
+                    sportType,
                 })
                 trainer.save(err => {
                     if (err) {
@@ -165,7 +166,7 @@ Router.get("/TrainerDetails",(req,res)=>{
                     age,
                     tel,
                     experience,
-                    username
+                    username,
                 })
                 trainer.save(err => {
                     if (err) {
@@ -183,5 +184,26 @@ Router.get("/TrainerDetails",(req,res)=>{
     })
 })
 
+
+Router.post('/editTrainerProfile',(req,res)=>{
+    const {username, email,age,tel,experience, sportType} = req.body
+    if(!username ||!email || !age || !tel||!experience || !sportType){
+        return res.status(422).json({error:"please add all the fields"})
+    }
+    Trainer.findOne({email:email})
+    .then(savedTrainer=>{
+        if(!savedTrainer){
+           return res.status(422).json({error:"Please fill in all the field required"})
+        }
+        savedTrainer.username = username
+        savedTrainer.age = age
+        savedTrainer.tel = tel
+        savedTrainer.experience = experience
+        savedTrainer.sportType = sportType
+        savedTrainer.save()
+        .then((trainer)=> {res.json({message: "Updated trainer profile successfully"})})
+        .catch(err => {res.json({message: err})})
+    })
+})
 
 module.exports = Router

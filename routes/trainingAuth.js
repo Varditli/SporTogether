@@ -6,39 +6,42 @@ const Training = mongoose.model("Training")
 const jwt = require('jsonwebtoken')
 const {JWT_SECRET} = require('../key')
 const requireLoginTrainer = require('../middleware/requireLoginTrainer')
-const requireLogin = require('../middleware/requireLogin')
+const requireLoginTrainee = require('../middleware/requireLoginTrainee')
 
 mongoose.set("useFindAndModify", false);
 
-Router.post('/createNewTraining',requireLoginTrainer,(req,res)=>{
-    const {name, capacity,type, time, intensity, limitations, gender, age_group, recurring, free_text} = req.body
-    if(!name || !capacity || !type || !time || !recurring){
+Router.post('/createNewTraining',(req,res)=>{
+    const {name, capacity,type, time, intensity, location, zoom, limitations, gender, age_group, additional_info} = req.body
+    if(!name || !zoom || !capacity || !type || !time ){
         return res.status(422).json({error:"please fill all the required fields"})
     }
+    console.log(name, capacity,type, time, intensity, location, zoom, limitations, gender, age_group, additional_info)
     const training = new Training({
         name,
         trainingCreator: req.trainer,
         created_at: Date.now(),
         capacity,
         type,
+        location,
+        zoom,
         time,
         intensity,
         limitations,
         gender,
         age_group,
-        recurring,
-        free_text,
-      
+        additional_info,
     })
-    training.save()
-    .then((result) => {
-      return  res.json({ training: result });
-      })
-      .catch((err) => {
-        return console.log(err);
-      });
+    training.save(err => {
+      if (err) {
+        res.status(500).send({ message: err });
+        return 
+      }
+      return res.json({message:"saved successfully"})
+    })
       
-});
+})
+
+
 
 Router.get("/all-trainings",(req,res)=>{
   Training.find()
@@ -51,7 +54,7 @@ Router.get("/all-trainings",(req,res)=>{
 })
 })
 
-Router.put("/like-training", requireLogin, (req, res) => {
+Router.put("/like-training", requireLoginTrainee, (req, res) => {
   Training.findByIdAndUpdate(
     req.body.trainingId,
     {
@@ -69,7 +72,7 @@ Router.put("/like-training", requireLogin, (req, res) => {
   });
 
   
-  Router.put("/unlike-training", requireLogin, (req, res) => {
+  Router.put("/unlike-training", requireLoginTrainee, (req, res) => {
     Training.findByIdAndUpdate(
       req.body.trainingId,
       {
@@ -88,7 +91,7 @@ Router.put("/like-training", requireLogin, (req, res) => {
   });
 
   //show all the trainings that the trainer created
-  Router.get("/mytrainings", requireLogin, (req, res) => {
+  Router.get("/mytrainings", requireLoginTrainee, (req, res) => {
     Deal.find({ trainingCreator: req.trainee })
       .populate("trainingCreator", "_id name")
       .then((mydeal) => {
@@ -100,7 +103,7 @@ Router.put("/like-training", requireLogin, (req, res) => {
   });
 });
 
-Router.put("/reg-training", requireLogin, (req, res) => {
+Router.put("/reg-training", requireLoginTrainee, (req, res) => {
   Training.findByIdAndUpdate(
     req.body.trainingId, 
     {
@@ -135,7 +138,7 @@ Router.put("/reg-training", requireLogin, (req, res) => {
 
 });
 
-Router.put("/unreg-training", requireLogin, (req, res) => {
+Router.put("/unreg-training", requireLoginTrainee, (req, res) => {
   Training.findByIdAndUpdate(
     req.body.trainingId, 
     {

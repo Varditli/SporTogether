@@ -10,15 +10,22 @@ new mongoose.Schema({
         ref:"Trainer"
     },
 
-    location:{
-        type:String,
-        required:false
-    },
 
     name:{
         type:String,
         required:true
     },
+
+    zoom:{
+        type:String,
+        required:true
+    },
+
+    location:{
+        type:String,
+        required:false
+    },
+
 
     capacity:{
         type:Number,
@@ -50,17 +57,16 @@ new mongoose.Schema({
         required:false
     },
 
-    age_group:{
-        type:String,
-        required:false
-    },
+    age_group:
+        [{type:Number}]
+    ,
 
-    recurring:{
-        type:Boolean,
-        required:true
-    },
+    // recurring:{
+    //     type:Boolean,
+    //     required:true
+    // },
 
-    free_text:{
+    additional_info:{
         type:String,
         required:false
     },
