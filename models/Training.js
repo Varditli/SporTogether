@@ -5,11 +5,15 @@ const trainingSchema = mongoose.model(
     "Training",
 new mongoose.Schema({
 
-    trainingCreator:{
-        type:ObjectId,
-        ref:"Trainer"
+    trainerId:{
+        type:String,
+        required:true
     },
 
+    trainerUsername:{
+        type:String,
+        required:true
+    },
 
     name:{
         type:String,

@@ -10,15 +10,21 @@ const requireLoginTrainee = require('../middleware/requireLoginTrainee')
 
 mongoose.set("useFindAndModify", false);
 
-Router.post('/createNewTraining',(req,res)=>{
+
+Router.post('/createNewTraining',requireLoginTrainer,(req,res)=>{
     const {name, capacity,type, time, intensity, location, zoom, limitations, gender, age_group, additional_info} = req.body
-    if(!name || !zoom || !capacity || !type || !time ){
+    if(!name || !zoom || !type || !time ){
         return res.status(422).json({error:"please fill all the required fields"})
     }
-    console.log(name, capacity,type, time, intensity, location, zoom, limitations, gender, age_group, additional_info)
-    const training = new Training({
+    Training.findOne({name:name})
+    .then((saveTraining)=>{
+        if(saveTraining){
+            return res.status(422).json({error:"Training already exist with this name"})
+        }
+        console.log(req.trainer)
+        //console.log(name, capacity,type, time, intensity, location, zoom, limitations, gender, age_group, additional_info)
+        const training = new Training({
         name,
-        trainingCreator: req.trainer,
         created_at: Date.now(),
         capacity,
         type,
@@ -30,20 +36,24 @@ Router.post('/createNewTraining',(req,res)=>{
         gender,
         age_group,
         additional_info,
-    })
-    training.save(err => {
-      if (err) {
-        res.status(500).send({ message: err });
-        return 
-      }
-      return res.json({message:"saved successfully"})
-    })
-      
+        trainerId: req.trainer._id,
+        trainerUsername: req.trainer.username,
+        })
+        training.save(err => {
+          if (err) {
+            res.status(500).send({ message: err });
+            return 
+          }
+          return res.json({message:"saved training successfully",training: training})
+        })
+   })
+  .catch(err=>{
+    console.log(err)
 })
+});
 
 
-
-Router.get("/all-trainings",(req,res)=>{
+Router.get("/allTrainings",(req,res)=>{
   Training.find()
     .populate("trainingCreator")
     .then((trainings)=>{
@@ -52,7 +62,7 @@ Router.get("/all-trainings",(req,res)=>{
 .catch((err)=>{
   res.json(err)
 })
-})
+});
 
 Router.put("/like-training", requireLoginTrainee, (req, res) => {
   Training.findByIdAndUpdate(

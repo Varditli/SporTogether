@@ -15,7 +15,7 @@ module.exports =( req,res,next)=>{
         }
         const {_id} = payload
         Trainer.findById(_id).then(trainerdata=>{
-            req.trainer = trainerdata;
+          req.trainer = trainerdata;
             next();
         })
     })
