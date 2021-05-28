@@ -27,8 +27,8 @@ new mongoose.Schema({
 
     // resetToken: String,
     // expireToken: Date,
-    mylikes:[{type:ObjectId,ref:"Training"}],
-    mytrainings:[{type:ObjectId,ref:"Training"}],
+    myLikes:[{type:ObjectId,ref:"Training"}],
+    //mytrainings:[{type:ObjectId,ref:"Training"}],
     // roles: [
     //     {
     //       type: mongoose.Schema.Types.ObjectId,

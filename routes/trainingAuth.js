@@ -2,6 +2,7 @@ const express = require('express')
 const Router = express.Router()
 const mongoose = require('mongoose')
 const Trainee = mongoose.model("Trainee")
+const Trainer = mongoose.model("Trainer")
 const Training = mongoose.model("Training")
 const jwt = require('jsonwebtoken')
 const {JWT_SECRET} = require('../key')
@@ -12,9 +13,9 @@ mongoose.set("useFindAndModify", false);
 
 
 Router.post('/createNewTraining',requireLoginTrainer,(req,res)=>{
-    const {name, capacity,type, time, intensity, location, zoom, limitations, gender, age_group, additional_info} = req.body
-    if(!name || !zoom || !type || !time ){
-        return res.status(422).json({error:"please fill all the required fields"})
+    const {name, capacity,type, time, price, intensity, location, zoom, limitations, gender, age_group, additional_info} = req.body
+    if(!name || !zoom || !type || !time || !price){
+        return res.status(422).json({error:"Please fill all the required fields"})
     }
     Training.findOne({name:name})
     .then((saveTraining)=>{
@@ -31,6 +32,7 @@ Router.post('/createNewTraining',requireLoginTrainer,(req,res)=>{
         location,
         zoom,
         time,
+        price,
         intensity,
         limitations,
         gender,
@@ -44,12 +46,13 @@ Router.post('/createNewTraining',requireLoginTrainer,(req,res)=>{
             res.status(500).send({ message: err });
             return 
           }
-          return res.json({message:"saved training successfully",training: training})
+          return res.json({message:"Saved training successfully",training: training})
         })
    })
   .catch(err=>{
     console.log(err)
 })
+
 });
 
 
@@ -64,11 +67,34 @@ Router.get("/allTrainings",(req,res)=>{
 })
 });
 
-Router.put("/like-training", requireLoginTrainee, (req, res) => {
+
+
+//trainee like
+Router.put("/like", requireLoginTrainee, (req, res) => {
   Training.findByIdAndUpdate(
     req.body.trainingId,
     {
-      $push: { likes: req.trainee._id },
+      $push: { mylikes: req.trainee._id },
+    },
+    {
+      new: true,
+    }
+  ).exec((err, result) => {
+    if (err) {
+      return res.status(422).json({ error: err });
+    } else {
+      res.json(result);
+    }
+  });
+});
+
+
+//trainee unlike
+Router.put("/unlike", requireLoginTrainee, (req, res) => {
+  Training.findByIdAndUpdate(
+    req.body.trainingId,
+    {
+      $pull: { likes: req.trainee._id },
     },
     {
       new: true,
@@ -81,27 +107,36 @@ Router.put("/like-training", requireLoginTrainee, (req, res) => {
     }
   });
 
-  
-  Router.put("/unlike-training", requireLoginTrainee, (req, res) => {
-    Training.findByIdAndUpdate(
-      req.body.trainingId,
-      {
-        $pull: { likes: req.trainee._id },
-      },
-      {
-        new: true,
-      }
-    ).exec((err, result) => {
-      if (err) {
-        return res.status(422).json({ error: err });
-      } else {
-        res.json(result);
-      }
+  //show the trainings that the trainee likes
+Router.get("/myLikes", requireLoginTrainee, (req, res) => {
+  Training.find({ mylikes: req.trainee })
+    .populate("mylikes", "_id name")
+    .then((myLike) => {
+      res.json({ myLike });
+    })
+    .catch((err) => {
+      console.log(err);
     });
-  });
+});
+
+
+//show all the trainings the trainee registered to
+Router.get("/myTrainingsTrainee", requireLoginTrainee, (req, res) => {
+  Training.find({ trainingBy: req.trainee })
+    .populate("trainingBy", "_id name")
+    .then((myTraining) => {
+      res.json({ myTraining });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+
+
 
   //show all the trainings that the trainer created
-  Router.get("/mytrainings", requireLoginTrainee, (req, res) => {
+  Router.get("/myTrainingsTrainer", requireLoginTrainee, (req, res) => {
     Deal.find({ trainingCreator: req.trainee })
       .populate("trainingCreator", "_id name")
       .then((mydeal) => {
@@ -113,9 +148,11 @@ Router.put("/like-training", requireLoginTrainee, (req, res) => {
   });
 });
 
-Router.put("/reg-training", requireLoginTrainee, (req, res) => {
+//adds the trainee to the participants list of the training
+Router.put("/regTrainingAddTrainee", requireLoginTrainee, (req, res) => {
+  const {trainingId} = req.body
   Training.findByIdAndUpdate(
-    req.body.trainingId, 
+    trainingId, 
     {
       $push: { participants: req.trainee._id },
     },
@@ -126,31 +163,18 @@ Router.put("/reg-training", requireLoginTrainee, (req, res) => {
     if (err) {
       return res.status(422).json({ error: err });
     } else {
-      res.json(result);
-    }
-  });
-
-  Trainee.findByIdAndUpdate(
-    req.body.trainerId, 
-    {
-      $push: { mytrainings: req.body.trainingId},
-    },
-    {
-      new: true,
-    }
-  ).exec((err, resu) => {
-    if (err) {
-      return res.status(422).json({ error: err });
-    } else {
-      res.json(resu);
+      res.json(result);   //returns training
+      console.log("Added trainee to training");
     }
   });
 
 });
 
-Router.put("/unreg-training", requireLoginTrainee, (req, res) => {
+//removes the trainee from the participants list of the training
+Router.put("/unRegTrainingRemoveTrainee", requireLoginTrainee, (req, res) => {
+  const {trainingId} = req.body
   Training.findByIdAndUpdate(
-    req.body.trainingId, 
+    trainingId,
     {
       $pull: { participants: req.trainee._id },
     },
@@ -165,4 +189,6 @@ Router.put("/unreg-training", requireLoginTrainee, (req, res) => {
     }
   });
 });
+
+
 module.exports = Router

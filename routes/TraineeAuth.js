@@ -3,10 +3,12 @@ const Router = express.Router()
 const mongoose = require('mongoose')
 const Trainee = mongoose.model("Trainee")
 const Trainer = mongoose.model("Trainer")
+const Training = mongoose.model("Training")
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const {JWT_SECRET} = require('../key')
 const requireLogin = require('../middleware/requireLoginTrainee')
+const requireLoginTrainee = require('../middleware/requireLoginTrainee')
 
 
 Router.post('/signupTrainee',(req,res)=>{
@@ -43,6 +45,7 @@ Router.post('/signupTrainee',(req,res)=>{
         console.log(err)
     })
 })
+
 
 Router.post('/signupTrainer',(req,res)=>{
     const {username,email,password,age,tel,experience, sportType, photo} = req.body
