@@ -69,11 +69,6 @@ new mongoose.Schema({
         type:Number,
         required:true
     },
-    
-    // recurring:{
-    //     type:Boolean,
-    //     required:true
-    // },
 
     additional_info:{
         type:String,

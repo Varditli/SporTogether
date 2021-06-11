@@ -69,6 +69,7 @@ Router.post("/forgotPassword", (req, res) => {
 	});
 });
 
+
 Router.post("/signinTrainee", (req, res) => {
 	const { email, password } = req.body;
 	if (!email || !password) {
@@ -102,7 +103,7 @@ Router.post("/signinTrainee", (req, res) => {
 });
 
 Router.get("/TraineeDetails", (req, res) => {
-	Trainer.find({ _id: req.body })
+	Trainee.find({ _id: req.body })
 		.populate("-password")
 		.then((traineeDetails) => {
 			res.json({ traineeDetails });
@@ -117,16 +118,18 @@ Router.post("/editTraineeProfile", (req, res) => {
 	if (!username || !email || !age || !tel) {
 		return res.status(422).json({ error: "please add all the fields" });
 	}
-	Trainer.findOne({ email: email }).then((savedTrainee) => {
+	Trainee.findOne({ email: email }).then((savedTrainee) => {
 		if (!savedTrainee) {
 			return res.status(422).json({ error: "Trainee not found" });
 		}
 		savedTrainee.username = username;
 		savedTrainee.age = age;
 		savedTrainee.tel = tel;
+
 		savedTrainee
 			.save()
 			.then((trainee) => {
+				console.log('trainee',trainee);
 				res.json({ message: "Updated trainee profile successfully" });
 			})
 			.catch((err) => {
