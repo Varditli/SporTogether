@@ -166,6 +166,26 @@ Router.put("/like", requireLoginTrainee, (req, res) => {
   });
 });
 
+//trainee unlike
+Router.put("/unlike", requireLoginTrainee, (req, res) => {
+  const { trainingId } = req.body;
+  Training.findByIdAndUpdate(
+    trainingId,
+    {
+      $pull: { likes: req.trainee._id },
+    },
+    {
+      new: true,
+    }
+  ).exec((err, result) => {
+    if (err) {
+      return res.status(422).json({ error: err });
+    } else {
+      res.json(result);
+    }
+  });
+});
+
 //show the trainings that the trainee likes
 Router.get("/myLikes", requireLoginTrainee, (req, res) => {
   console.log("myLikes");
@@ -206,25 +226,6 @@ Router.get("/myTrainingsTrainee", requireLoginTrainee, (req, res) => {
     });
 });
 
-//trainee unlike
-Router.put("/unlike", requireLoginTrainee, (req, res) => {
-  const { trainingId } = req.body;
-  Training.findByIdAndUpdate(
-    trainingId,
-    {
-      $pull: { likes: req.trainee._id },
-    },
-    {
-      new: true,
-    }
-  ).exec((err, result) => {
-    if (err) {
-      return res.status(422).json({ error: err });
-    } else {
-      res.json(result);
-    }
-  });
-});
 
 //adds the trainee to the participants list of the training
 Router.put("/regTrainingAddTrainee", requireLoginTrainee, (req, res) => {

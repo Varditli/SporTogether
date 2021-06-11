@@ -11,7 +11,7 @@ const requireLoginTrainer = require('../middleware/requireLoginTrainer')
 
 
 Router.post('/signupTrainer',(req,res)=>{
-    const {username,email,password,age,tel,experience, sportType, photo} = req.body
+    const {username,email,password,age,tel,experience, sportType} = req.body
     if(!email || !password || !username || !age || !tel||!experience || !sportType){
         return res.status(422).json({error:"please add all the fields"})
     }
@@ -66,14 +66,14 @@ Router.post('/signinTrainer',(req,res)=>{
                res.json({token, trainer:{ _id, username, email, tel, age, password, experience, sportType, photo}})
             }
             else{
-                return res.status(422).json({error:"Invalid email or password"})
+                return res.status(422).json({error:"Invalid email or password"});
             }
         })
         .catch(err=>{
-            console.log(err)
+            console.log(err);
         })
-    })
-})
+    });
+});
 
 
 Router.get("/TrainerDetails",(req,res)=>{
@@ -85,44 +85,8 @@ Router.get("/TrainerDetails",(req,res)=>{
   .catch((err)=>{
     res.json(err)
   })
-  })
+  });
 
-
-//   Router.post('/EditTrainer',(req,res)=>{
-//     const {username,email,password,age,tel,experience, sportType, photo} = req.body
-//     if(!email || !password || !username || !age || !tel||!experience|| !sportType){
-//         return res.status(422).json({error:"please fill in all the fields"})
-//     }
-//     Trainer.findOne({email:email})
-//     .then((saveTrainer)=>{
-//         if(saveTrainer){
-//             return res.status(422).json({error:"Trainer already exist with that email"})
-//         }
-//         bcrypt.hash(password,12)
-//         .then(hashedpassword=>{
-//                 const trainer = new Trainer({
-//                     email,
-//                     password:hashedpassword,
-//                     age,
-//                     tel,
-//                     experience,
-//                     username,
-//                 })
-//                 trainer.save(err => {
-//                     if (err) {
-//                       res.status(500).send({ message: err })
-//                       return
-//                     }
-//                     res.json({message:"saved successfully"})
-//                 })
-//         })
-        
-//     })
-
-//     .catch(err=>{
-//         console.log(err)
-//     })
-// })
 
 
 Router.post('/editTrainerProfile',(req,res)=>{
@@ -144,7 +108,7 @@ Router.post('/editTrainerProfile',(req,res)=>{
         .then((trainer)=> {res.json({message: "Updated trainer profile successfully"})})
         .catch(err => {res.json({message: err})})
     })
-})
+});
 
 
 Router.post("/forgotPasswordTrainer", (req, res) => {
@@ -152,15 +116,15 @@ Router.post("/forgotPasswordTrainer", (req, res) => {
 	if (!email || !password || !tel) {
 		return res
 			.status(422)
-			.json({ error: "please add email or password or Tell" });
+			.json({ error: "please add email or password or tel" });
 	}
-	Trainer.findOne({ email, tel }).then((savedTrainee) => {
-		if (!savedTrainee) {
-			return res.status(422).json({ error: "Invalid email or tell" });
+	Trainer.findOne({ email, tel }).then((savedTrainer) => {
+		if (!savedTrainer) {
+			return res.status(422).json({ error: "Invalid email or tel" });
 		}
 		bcrypt.hash(password, 12).then((hashedpassword) => {
-			savedTrainee.password = hashedpassword;
-			savedTrainee.save((err) => {
+			savedTrainer.password = hashedpassword;
+			savedTrainer.save((err) => {
 				if (err) {
 					res.status(500).send({ message: err });
 					return;

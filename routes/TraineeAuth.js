@@ -50,11 +50,11 @@ Router.post("/forgotPassword", (req, res) => {
 	if (!email || !password || !tel) {
 		return res
 			.status(422)
-			.json({ error: "please add email or password or Tell" });
+			.json({ error: "please add email or password or tel" });
 	}
 	Trainee.findOne({ email, tel }).then((savedTrainee) => {
 		if (!savedTrainee) {
-			return res.status(422).json({ error: "Invalid email or tell" });
+			return res.status(422).json({ error: "Invalid email or tel" });
 		}
 		bcrypt.hash(password, 12).then((hashedpassword) => {
 			savedTrainee.password = hashedpassword;
